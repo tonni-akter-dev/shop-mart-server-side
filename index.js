@@ -17,11 +17,23 @@ async function run() {
     await client.connect();
     const database = client.db("shop-mart");
     const userCollection = database.collection("users");
-    const homeAllCollection = database.collection("homeall");
+    // const allProductsCollection = database.collection("homeall");
     const reviewCollection = database.collection("review");
     const allOrderCollection = database.collection("allOrder");
+    const allProductsCollection = database.collection("HomeProducts");
 
+    // addproducton home
+    app.post("/addToProduct", async (req, res) => {
+      const product = req.body;
+      const result = await allProductsCollection.insertOne(product);
+      res.json(result);
+    });
 
+    // allProductsCollection
+    app.get("/allProducts", async (req, res) => {
+      const products = await allProductsCollection.find({}).toArray();
+      res.send(products);
+    });
     // all order products get ==============================================
     app.get("/allOrder", async (req, res) => {
       const products = await allOrderCollection.find({}).toArray();
@@ -46,6 +58,13 @@ async function run() {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
       const result = await allOrderCollection.deleteOne(query);
+      res.send(result);
+    });
+    // admin product delete ==============================================
+    app.delete("/productDelete/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await allProductsCollection.deleteOne(query);
       res.send(result);
     });
     // Delete manage all product ========================================
@@ -103,12 +122,17 @@ async function run() {
     app.get("/homeProducts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: ObjectId(id) };
-      const result = await homeAllCollection.findOne(query);
+      const result = await allProductsCollection.findOne(query);
       res.json(result);
     });
-
-    app.get("/homeproducts", async (req, res) => {
-      const cursor = homeAllCollection.find();
+    app.get("/homeProducts", async (req, res) => {
+      const limit = 8;
+      const cursor = allProductsCollection.find({}).limit(limit);
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
