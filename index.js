@@ -21,6 +21,65 @@ async function run() {
     const shoesCollection = database.collection("shoes");
     const bagsCollection = database.collection("bags");
     const reviewCollection = database.collection("review");
+    const allOrderCollection = database.collection('allOrder');
+
+    console.log('Connecting database')
+
+    // all order products get ==============================================
+    app.get('/allOrder', async (req, res) => {
+      const products = await allOrderCollection.find({}).toArray();
+      res.send(products);
+    })
+
+    //all order Product post===============================================
+    app.post('/addToCartProduct', async (req, res) => {
+      const product = req.body;
+      const result = await allOrderCollection.insertOne(product)
+      res.json(result)
+    })
+    // email get my Order==============================================
+    app.get('/myOrder/:email', async (req, res) => {
+      const email = req.params.email;
+      const query = { email: email }
+      const myOrder = await allOrderCollection.find(query).toArray();
+      res.send(myOrder)
+    })
+    // my order delete ==================================================
+    app.delete('/myOrderDelete/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await allOrderCollection.deleteOne(query);
+      res.send(result)
+
+    })
+    // Delete manage all product ========================================
+    app.delete('/manageAllOrderDelete/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await allOrderCollection.deleteOne(query);
+      res.send(result)
+
+    })
+    // status Update ==================================================
+    app.put("/statusUpdate/:id", async (req, res) => {
+      const id = req.params.id;
+      const status = req.body.status;
+      const statusColor = req.body.statusColor;
+      const filter = { _id: ObjectId(id) };
+      await allOrderCollection.updateOne(filter, {
+        $set: {
+          status: status,
+          statusColor: statusColor
+
+        },
+      })
+        .then((result) => {
+          res.send(result);
+        });
+
+    });
+
+
     // users collection insert a user
     app.post("/users", async (req, res) => {
       const user = req.body;
