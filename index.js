@@ -20,7 +20,7 @@ async function run() {
     const homeAllCollection = database.collection("homeall");
     const reviewCollection = database.collection("review");
     const allOrderCollection = database.collection("allOrder");
-  
+
 
     // all order products get ==============================================
     app.get("/allOrder", async (req, res) => {
@@ -102,7 +102,6 @@ async function run() {
     // homeproducts
     app.get("/homeProducts/:id", async (req, res) => {
       const id = req.params.id;
-      console.log(id);
       const query = { _id: ObjectId(id) };
       const result = await homeAllCollection.findOne(query);
       res.json(result);
