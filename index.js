@@ -108,6 +108,14 @@ async function run() {
         });
         // homeproducts
         // all
+
+        app.get("/homeProducts/:id", async (req, res) => {
+          const id = req.params.id;
+          const query = { _id: ObjectId(id) };
+          const result = await productCollection.findOne(query);
+          res.json(result);
+        });
+
         app.get("/homeproducts/all", async (req, res) => {
           const cursor = homeAllCollection.find();
           const result = await cursor.toArray();
