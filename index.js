@@ -20,7 +20,6 @@ async function run() {
     const homeAllCollection = database.collection("homeall");
     const reviewCollection = database.collection("review");
     const allOrderCollection = database.collection("allOrder");
-  
 
     // all order products get ==============================================
     app.get("/allOrder", async (req, res) => {
@@ -110,6 +109,11 @@ async function run() {
 
     app.get("/homeproducts", async (req, res) => {
       const cursor = homeAllCollection.find();
+      const result = await cursor.toArray();
+      res.send(result);
+    });
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
       const result = await cursor.toArray();
       res.send(result);
     });
